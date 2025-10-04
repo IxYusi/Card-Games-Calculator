@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>حاسبة 700</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1e293b">
+  <style>
+    body {
+      font-family: "Tajawal", system-ui, sans-serif;
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      color: #f1f5f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      color: #3b82f6;
+      margin-bottom: 16px;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 14px;
+      color: #e2e8f0;
+    }
+
+    input[type=number], select {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #475569;
+      text-align: center;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .primary:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary {
+      background: #334155;
+      color: #e2e8f0;
+    }
+
+    .secondary:hover {
+      background: #475569;
+    }
+
+    .scores {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-top: 16px;
+    }
+
+    .score-box {
+      flex: 1;
+      background: #0f172a;
+      border-radius: 12px;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .team-name {
+      font-weight: 600;
+      color: #60a5fa;
+    }
+
+    .total {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .hint {
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 8px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 14px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    li {
+      background: #334155;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 14px;
+      color: #f8fafc;
+    }
+  </style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>📊 حاسبة 700</h1>
+
+      <div class="row">
+        <label>الفريق</label>
+        <select id="teamSelect">
+          <option value="teamA">الفريق A</option>
+          <option value="teamB">الفريق B</option>
+        </select>
+
+        <label>النقاط</label>
+        <input id="pointsInput" type="number" min="0" max="700" value="152">
+
+        <button id="addBtn" class="primary">➕ أضف النقاط</button>
+      </div>
+
+      <div class="scores">
+        <div class="score-box">
+          <div class="team-name">الفريق A</div>
+          <div class="total" id="totalA">0</div>
+        </div>
+        <div class="score-box">
+          <div class="team-name">الفريق B</div>
+          <div class="total" id="totalB">0</div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button id="undoBtn" class="secondary">↩️ تراجع</button>
+        <button id="resetBtn" class="secondary">🔄 إعادة ضبط</button>
+
+        <label style="display:flex;flex-direction:column;margin-top:6px;">
+          الحد الأقصى للتسجيل:
+          <input id="limitInput" type="number" min="1" max="10000" value="700" />
+        </label>
+      </div>
+
+      <div class="hint">الحد الأقصى لكل تسجيل هو <span id="limitHint">700</span> نقطة.</div>
+
+      <ul id="history"></ul>
+    </div>
+  </div>
+
+  <script>
+    const totalAEl = document.getElementById('totalA');
+    const totalBEl = document.getElementById('totalB');
+    const pointsInput = document.getElementById('pointsInput');
+    const teamSelect = document.getElementById('teamSelect');
+    const addBtn = document.getElementById('addBtn');
+    const historyEl = document.getElementById('history');
+    const undoBtn = document.getElementById('undoBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const limitInput = document.getElementById('limitInput');
+    const limitHint = document.getElementById('limitHint');
+
+    let totalA = 0;
+    let totalB = 0;
+    let history = [];
+
+    function renderTotals() {
+      totalAEl.textContent = totalA;
+      totalBEl.textContent = totalB;
+    }
+
+    function renderHistory() {
+      historyEl.innerHTML = '';
+      for (let i = history.length - 1; i >= 0; i--) {
+        const it = history[i];
+        const li = document.createElement('li');
+        li.textContent = `${it.team === 'teamA' ? 'الفريق A' : 'الفريق B'} +${it.points}`;
+        historyEl.appendChild(li);
+      }
+    }
+
+    addBtn.addEventListener('click', () => {
+      let pts = parseInt(pointsInput.value, 10);
+      if (isNaN(pts) || pts < 0) {
+        alert('الرجاء إدخال قيمة صحيحة للنقاط');
+        return;
+      }
+      const limit = parseInt(limitInput.value, 10) || 700;
+      if (pts > limit) {
+        alert(`الحد الأقصى هو ${limit} نقطة، تم تعديل القيمة إلى ${limit}`);
+        pts = limit;
+      }
+      const team = teamSelect.value;
+      if (team === 'teamA') totalA += pts; else totalB += pts;
+      history.push({ team, points: pts });
+      renderTotals();
+      renderHistory();
+    });
+
+    undoBtn.addEventListener('click', () => {
+      if (history.length === 0) return;
+      const last = history.pop();
+      if (last.team === 'teamA') totalA -= last.points; else totalB -= last.points;
+      totalA = Math.max(0, totalA);
+      totalB = Math.max(0, totalB);
+      renderTotals();
+      renderHistory();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (!confirm('هل تريد إعادة ضبط النتائج والسجل؟')) return;
+      totalA = 0;
+      totalB = 0;
+      history = [];
+      renderTotals();
+      renderHistory();
+    });
+
+    limitInput.addEventListener('change', () => {
+      const v = parseInt(limitInput.value, 10) || 700;
+      limitHint.textContent = v;
+      pointsInput.max = v;
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+
+    renderTotals();
+    renderHistory();
+  </script>
+</body>
+</html>
