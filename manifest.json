@@ -1,6 +1,6 @@
 {
-  "name": "حاسبة 700",
-  "short_name": "700",
+  "name": "حاسبة العاب الورق",
+  "short_name": "حاسبة العاب الورق",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#121212",
