@@ -6,15 +6,38 @@
   <title>حاسبة الورق</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1e293b">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --button-bg: #334155;
+      --button-hover: #475569;
+    }
+
+    body.light {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --accent: #2563eb;
+      --button-bg: #e2e8f0;
+      --button-hover: #cbd5e1;
+    }
+
     body {
       font-family: "Tajawal", system-ui, sans-serif;
-      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-      color: #f1f5f9;
+      background: linear-gradient(180deg, var(--bg-main) 0%, var(--bg-card) 100%);
+      color: var(--text-main);
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .container {
@@ -23,39 +46,86 @@
     }
 
     .card {
-      background: #1e293b;
+      background: var(--bg-card);
       border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
       padding: 20px;
+      position: relative;
+      transition: background 0.3s ease;
+      overflow: visible;
     }
 
     h1 {
       text-align: center;
-      font-size: 24px;
-      color: #3b82f6;
+      font-size: 25px;
+      color: var(--accent);
       margin-bottom: 16px;
+    }
+
+    
+    .theme-switch {
+      position: absolute;
+      top: 15px;
+      right: 20px; /* تم تغييره إلى اليمين */
+      width: 62px;
+      height: 34px;
+      background: var(--button-bg);
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 1px;
+      box-sizing: border-box;
+      transition: background 0.25s ease;
+      z-index: 999; 
+    }
+
+    .theme-switch .circle {
+      width: 28px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      transform: translateX(0);
+      transition: transform 0.25s ease, background 0.25s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    
+    body.light .theme-switch {
+      background: var(--button-hover);
+    }
+
+    body.light .theme-switch .circle {
+      transform: translateX(-30px);
+      background: var(--accent);
     }
 
     .row {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 26px;
     }
 
     label {
       font-size: 14px;
-      color: #e2e8f0;
+      color: var(--text-muted);
     }
 
     input[type=number], select {
       padding: 10px;
       border-radius: 10px;
-      border: 1px solid #475569;
+      border: 1px solid var(--button-hover);
       text-align: center;
-      background: #0f172a;
-      color: #f8fafc;
+      background: var(--bg-main);
+      color: var(--text-main);
       font-size: 16px;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     button {
@@ -70,21 +140,21 @@
     }
 
     .primary {
-      background: #2563eb;
+      background: var(--accent);
       color: white;
     }
 
     .primary:hover {
-      background: #1d4ed8;
+      filter: brightness(0.95);
     }
 
     .secondary {
-      background: #334155;
-      color: #e2e8f0;
+      background: var(--button-bg);
+      color: var(--text-main);
     }
 
     .secondary:hover {
-      background: #475569;
+      background: var(--button-hover);
     }
 
     .scores {
@@ -96,7 +166,7 @@
 
     .score-box {
       flex: 1;
-      background: #0f172a;
+      background: var(--bg-main);
       border-radius: 12px;
       text-align: center;
       padding: 12px;
@@ -104,7 +174,7 @@
 
     .team-name {
       font-weight: 600;
-      color: #60a5fa;
+      color: var(--accent);
     }
 
     .total {
@@ -123,7 +193,7 @@
     .hint {
       text-align: center;
       font-size: 13px;
-      color: #94a3b8;
+      color: var(--text-muted);
       margin-top: 8px;
     }
 
@@ -136,33 +206,68 @@
     }
 
     li {
-      background: #334155;
+      background: var(--button-bg);
       margin-bottom: 6px;
       border-radius: 8px;
       padding: 8px 10px;
       font-size: 14px;
-      color: #f8fafc;
+      color: var(--text-main);
     }
 
-    /* زر السهم */
+    /* مؤشر موزع الورق */
+    .dealer-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .dealer-title {
+      color: var(--accent);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
     #arrowBtn {
-      font-size: 28px;
-      background: #1e40af;
-      color: #f8fafc;
-      transition: transform 0.3s ease;
+      position: relative;
+      background: var(--button-bg);
+      color: var(--text-main);
+      border: none;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      transition: background 0.3s ease;
+    }
+
+    #arrowIcon {
+      font-size: 32px;
+      transition: transform 0.28s cubic-bezier(.2,.9,.3,1);
+      display: inline-block; 
+      transform-origin: 50% 50%;
     }
 
     #arrowBtn:hover {
-      background: #1d4ed8;
+      background: var(--button-hover);
+    }
+
+    
+    @media (max-width: 420px) {
+      .card { padding-top: 28px; }
     }
   </style>
-
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <div class="container">
     <div class="card">
+     
+      <div class="theme-switch" id="themeSwitch" aria-label="تبديل الثيم">
+        <div class="circle" id="themeIcon">🌙</div>
+      </div>
+
       <h1>📊 حاسبة الورق</h1>
 
       <div class="row">
@@ -197,14 +302,19 @@
           الحد الأقصى للتسجيل:
           <input id="limitInput" type="number" min="1" max="10000" value="700" />
         </label>
+      </div>
 
-        <!-- زر السهم -->
-        <button id="arrowBtn" class="secondary">⬇️</button>
+
+      <div class="dealer-section">
+        <div class="dealer-title">مؤشر موزع الورق</div>
+        <button id="arrowBtn" aria-label="مؤشر موزع">
+          <span id="arrowIcon">⬇️</span>
+        </button>
       </div>
 
       <div class="hint">الحد الأقصى لكل تسجيل هو <span id="limitHint">700</span> نقطة.</div>
 
-      <ul id="history"></ul>
+      <ul id="history" aria-live="polite"></ul>
     </div>
   </div>
 
@@ -220,6 +330,9 @@
     const limitInput = document.getElementById('limitInput');
     const limitHint = document.getElementById('limitHint');
     const arrowBtn = document.getElementById('arrowBtn');
+    const arrowIcon = document.getElementById('arrowIcon');
+    const themeSwitch = document.getElementById('themeSwitch');
+    const themeIcon = document.getElementById('themeIcon');
 
     let totalA = 0;
     let totalB = 0;
@@ -284,16 +397,37 @@
       pointsInput.max = v;
     });
 
-    // حركة السهم
+
     arrowBtn.addEventListener('click', () => {
       angle -= 90;
-      arrowBtn.style.transform = `rotate(${angle}deg)`;
-      arrowBtn.style.transition = 'transform 0.3s ease';
+      arrowIcon.style.transform = `rotate(${angle}deg)`;
     });
+
+
+    function setTheme(mode) {
+      document.body.classList.toggle('light', mode === 'light');
+      themeIcon.textContent = mode === 'light' ? '☀️' : '🌙';
+      localStorage.setItem('theme', mode);
+    }
+
+    themeSwitch.addEventListener('click', () => {
+      const current = document.body.classList.contains('light') ? 'light' : 'dark';
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
+        try {
+          navigator.serviceWorker.register('service-worker.js');
+        } catch (e) {
+
+          console.warn('SW register failed', e);
+        }
       });
     }
 
