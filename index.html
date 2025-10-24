@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>حاسبة العاب الورق</title>
+  <title>حاسبة الورق</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1e293b">
   <style>
@@ -143,6 +143,18 @@
       font-size: 14px;
       color: #f8fafc;
     }
+
+    /* زر السهم */
+    #arrowBtn {
+      font-size: 28px;
+      background: #1e40af;
+      color: #f8fafc;
+      transition: transform 0.3s ease;
+    }
+
+    #arrowBtn:hover {
+      background: #1d4ed8;
+    }
   </style>
 
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
@@ -151,28 +163,28 @@
 <body>
   <div class="container">
     <div class="card">
-      <h1>حاسبة العاب الورق</h1>
+      <h1>📊 حاسبة الورق</h1>
 
       <div class="row">
         <label>الفريق</label>
         <select id="teamSelect">
-          <option value="teamA">الفريق A</option>
-          <option value="teamB">الفريق B</option>
+          <option value="teamA">لنا</option>
+          <option value="teamB">لهم</option>
         </select>
 
         <label>النقاط</label>
-        <input id="pointsInput" type="number" min="0" max="700" value="50">
+        <input id="pointsInput" type="number" min="0" max="700" value="152">
 
         <button id="addBtn" class="primary">➕ أضف النقاط</button>
       </div>
 
       <div class="scores">
         <div class="score-box">
-          <div class="team-name">الفريق A</div>
+          <div class="team-name">لنا</div>
           <div class="total" id="totalA">0</div>
         </div>
         <div class="score-box">
-          <div class="team-name">الفريق B</div>
+          <div class="team-name">لهم</div>
           <div class="total" id="totalB">0</div>
         </div>
       </div>
@@ -183,8 +195,11 @@
 
         <label style="display:flex;flex-direction:column;margin-top:6px;">
           الحد الأقصى للتسجيل:
-          <input id="limitInput" type="number" min="1" max="100000000" value="700" />
+          <input id="limitInput" type="number" min="1" max="10000" value="700" />
         </label>
+
+        <!-- زر السهم -->
+        <button id="arrowBtn" class="secondary">⬇️</button>
       </div>
 
       <div class="hint">الحد الأقصى لكل تسجيل هو <span id="limitHint">700</span> نقطة.</div>
@@ -204,10 +219,12 @@
     const resetBtn = document.getElementById('resetBtn');
     const limitInput = document.getElementById('limitInput');
     const limitHint = document.getElementById('limitHint');
+    const arrowBtn = document.getElementById('arrowBtn');
 
     let totalA = 0;
     let totalB = 0;
     let history = [];
+    let angle = 0;
 
     function renderTotals() {
       totalAEl.textContent = totalA;
@@ -219,7 +236,7 @@
       for (let i = history.length - 1; i >= 0; i--) {
         const it = history[i];
         const li = document.createElement('li');
-        li.textContent = `${it.team === 'teamA' ? 'الفريق A' : 'الفريق B'} +${it.points}`;
+        li.textContent = `${it.team === 'teamA' ? 'لنا' : 'لهم'} +${it.points}`;
         historyEl.appendChild(li);
       }
     }
@@ -265,6 +282,13 @@
       const v = parseInt(limitInput.value, 10) || 700;
       limitHint.textContent = v;
       pointsInput.max = v;
+    });
+
+    // حركة السهم
+    arrowBtn.addEventListener('click', () => {
+      angle -= 90;
+      arrowBtn.style.transform = `rotate(${angle}deg)`;
+      arrowBtn.style.transition = 'transform 0.3s ease';
     });
 
     if ('serviceWorker' in navigator) {
