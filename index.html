@@ -17,6 +17,8 @@
       --accent: #3b82f6;
       --button-bg: #334155;
       --button-hover: #475569;
+      --teamA: #2563eb; /* لنا */
+      --teamB: #dc2626; /* لهم */
     }
 
     body.light {
@@ -27,6 +29,8 @@
       --accent: #2563eb;
       --button-bg: #e2e8f0;
       --button-hover: #cbd5e1;
+      --teamA: #2563eb;
+      --teamB: #dc2626;
     }
 
     body {
@@ -62,11 +66,10 @@
       margin-bottom: 16px;
     }
 
-    
     .theme-switch {
       position: absolute;
       top: 15px;
-      right: 20px; /* تم تغييره إلى اليمين */
+      right: 20px;
       width: 62px;
       height: 34px;
       background: var(--button-bg);
@@ -95,7 +98,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
-    
     body.light .theme-switch {
       background: var(--button-hover);
     }
@@ -117,7 +119,7 @@
       color: var(--text-muted);
     }
 
-    input[type=number], select {
+    input[type=number] {
       padding: 10px;
       border-radius: 10px;
       border: 1px solid var(--button-hover);
@@ -155,6 +157,17 @@
 
     .secondary:hover {
       background: var(--button-hover);
+    }
+
+    /* ✅ زر الفريق */
+    #teamToggle {
+      background: var(--teamA);
+      color: white;
+      transition: background 0.25s ease;
+    }
+
+    #teamToggle.teamB {
+      background: var(--teamB);
     }
 
     .scores {
@@ -206,15 +219,23 @@
     }
 
     li {
-      background: var(--button-bg);
       margin-bottom: 6px;
       border-radius: 8px;
       padding: 8px 10px;
       font-size: 14px;
       color: var(--text-main);
+      text-align: right;
     }
 
-    /* مؤشر موزع الورق */
+    /* ✅ خلفية السجل حسب الفريق */
+    li.teamA {
+      background: rgba(37, 99, 235, 0.3); /* أزرق خفيف */
+    }
+
+    li.teamB {
+      background: rgba(220, 38, 38, 0.3); /* أحمر خفيف */
+    }
+
     .dealer-section {
       margin-top: 20px;
       text-align: center;
@@ -253,7 +274,6 @@
       background: var(--button-hover);
     }
 
-    
     @media (max-width: 420px) {
       .card { padding-top: 28px; }
     }
@@ -272,10 +292,7 @@
 
       <div class="row">
         <label>الفريق</label>
-        <select id="teamSelect">
-          <option value="teamA">لنا</option>
-          <option value="teamB">لهم</option>
-        </select>
+        <button id="teamToggle" class="secondary">لنا</button>
 
         <label>النقاط</label>
         <input id="pointsInput" type="number" min="0" max="700" value="152">
@@ -304,7 +321,6 @@
         </label>
       </div>
 
-
       <div class="dealer-section">
         <div class="dealer-title">مؤشر موزع الورق</div>
         <button id="arrowBtn" aria-label="مؤشر موزع">
@@ -322,7 +338,6 @@
     const totalAEl = document.getElementById('totalA');
     const totalBEl = document.getElementById('totalB');
     const pointsInput = document.getElementById('pointsInput');
-    const teamSelect = document.getElementById('teamSelect');
     const addBtn = document.getElementById('addBtn');
     const historyEl = document.getElementById('history');
     const undoBtn = document.getElementById('undoBtn');
@@ -333,11 +348,13 @@
     const arrowIcon = document.getElementById('arrowIcon');
     const themeSwitch = document.getElementById('themeSwitch');
     const themeIcon = document.getElementById('themeIcon');
+    const teamToggle = document.getElementById('teamToggle');
 
     let totalA = 0;
     let totalB = 0;
     let history = [];
     let angle = 0;
+    let currentTeam = 'teamA';
 
     function renderTotals() {
       totalAEl.textContent = totalA;
@@ -350,9 +367,22 @@
         const it = history[i];
         const li = document.createElement('li');
         li.textContent = `${it.team === 'teamA' ? 'لنا' : 'لهم'} +${it.points}`;
+        li.classList.add(it.team);
         historyEl.appendChild(li);
       }
     }
+
+    teamToggle.addEventListener('click', () => {
+      if (currentTeam === 'teamA') {
+        currentTeam = 'teamB';
+        teamToggle.textContent = 'لهم';
+        teamToggle.classList.add('teamB');
+      } else {
+        currentTeam = 'teamA';
+        teamToggle.textContent = 'لنا';
+        teamToggle.classList.remove('teamB');
+      }
+    });
 
     addBtn.addEventListener('click', () => {
       let pts = parseInt(pointsInput.value, 10);
@@ -365,7 +395,7 @@
         alert(`الحد الأقصى هو ${limit} نقطة، تم تعديل القيمة إلى ${limit}`);
         pts = limit;
       }
-      const team = teamSelect.value;
+      const team = currentTeam;
       if (team === 'teamA') totalA += pts; else totalB += pts;
       history.push({ team, points: pts });
       renderTotals();
@@ -397,12 +427,10 @@
       pointsInput.max = v;
     });
 
-
     arrowBtn.addEventListener('click', () => {
       angle -= 90;
       arrowIcon.style.transform = `rotate(${angle}deg)`;
     });
-
 
     function setTheme(mode) {
       document.body.classList.toggle('light', mode === 'light');
@@ -415,17 +443,14 @@
       setTheme(current === 'light' ? 'dark' : 'light');
     });
 
-
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
-
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         try {
           navigator.serviceWorker.register('service-worker.js');
         } catch (e) {
-
           console.warn('SW register failed', e);
         }
       });
