@@ -352,13 +352,16 @@
       totalBEl.textContent = totalB;
     }
 
+// ✅ سجل النقاط مع خلفية حسب الفريق ولون نص واضح حسب الثيم
 function renderHistory() {
   historyEl.innerHTML = '';
+  const isLight = document.body.classList.contains('light');
   for (let i = history.length - 1; i >= 0; i--) {
     const it = history[i];
     const li = document.createElement('li');
     li.textContent = `${it.team === 'teamA' ? 'لنا' : 'لهم'} +${it.points}`;
-    li.style.background = it.team === 'teamA' ? 'var(--teamA)' : 'var(--teamB)'; // ✅ لون الخلفية حسب الفريق
+    li.style.background = it.team === 'teamA' ? 'var(--teamA)' : 'var(--teamB)';
+    li.style.color = isLight ? '#ffffff' : 'var(--text-main)'; // نص واضح
     historyEl.appendChild(li);
   }
 }
