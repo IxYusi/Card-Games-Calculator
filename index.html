@@ -4,8 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>حاسبة الورق</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#1e293b">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -29,19 +27,16 @@
       --accent: #2563eb;
       --button-bg: #e2e8f0;
       --button-hover: #cbd5e1;
-      --teamA: #2563eb;
-      --teamB: #dc2626;
     }
 
     body {
-      font-family: "Tajawal", system-ui, sans-serif;
+      font-family: "Tajawal", sans-serif;
       background: linear-gradient(180deg, var(--bg-main) 0%, var(--bg-card) 100%);
       color: var(--text-main);
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
-      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .container {
@@ -55,8 +50,6 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.4);
       padding: 20px;
       position: relative;
-      transition: background 0.3s ease;
-      overflow: visible;
     }
 
     h1 {
@@ -66,6 +59,7 @@
       margin-bottom: 16px;
     }
 
+    /* زر الثيم */
     .theme-switch {
       position: absolute;
       top: 15px;
@@ -78,9 +72,6 @@
       display: flex;
       align-items: center;
       padding: 1px;
-      box-sizing: border-box;
-      transition: background 0.25s ease;
-      z-index: 999; 
     }
 
     .theme-switch .circle {
@@ -94,17 +85,11 @@
       color: #fff;
       font-size: 14px;
       transform: translateX(0);
-      transition: transform 0.25s ease, background 0.25s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-    }
-
-    body.light .theme-switch {
-      background: var(--button-hover);
+      transition: transform 0.25s ease;
     }
 
     body.light .theme-switch .circle {
       transform: translateX(-30px);
-      background: var(--accent);
     }
 
     .row {
@@ -127,7 +112,6 @@
       background: var(--bg-main);
       color: var(--text-main);
       font-size: 16px;
-      transition: background 0.3s ease, color 0.3s ease;
     }
 
     button {
@@ -146,17 +130,9 @@
       color: white;
     }
 
-    .primary:hover {
-      filter: brightness(0.95);
-    }
-
     .secondary {
       background: var(--button-bg);
       color: var(--text-main);
-    }
-
-    .secondary:hover {
-      background: var(--button-hover);
     }
 
     /* ✅ زر الفريق */
@@ -218,22 +194,22 @@
       overflow-y: auto;
     }
 
+    /* ✅ السجل بخلفية ملونة */
     li {
       margin-bottom: 6px;
       border-radius: 8px;
       padding: 8px 10px;
       font-size: 14px;
-      color: var(--text-main);
       text-align: right;
+      color: white;
     }
 
-    /* ✅ خلفية السجل حسب الفريق */
     li.teamA {
-      background: rgba(37, 99, 235, 0.3); /* أزرق خفيف */
+      background: var(--teamA);
     }
 
     li.teamB {
-      background: rgba(220, 38, 38, 0.3); /* أحمر خفيف */
+      background: var(--teamB);
     }
 
     .dealer-section {
@@ -241,15 +217,7 @@
       text-align: center;
     }
 
-    .dealer-title {
-      color: var(--accent);
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
     #arrowBtn {
-      position: relative;
       background: var(--button-bg);
       color: var(--text-main);
       border: none;
@@ -259,23 +227,41 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto;
-      transition: background 0.3s ease;
     }
 
     #arrowIcon {
       font-size: 32px;
-      transition: transform 0.28s cubic-bezier(.2,.9,.3,1);
-      display: inline-block; 
-      transform-origin: 50% 50%;
+      transition: transform 0.3s;
     }
 
-    #arrowBtn:hover {
-      background: var(--button-hover);
+    /* ✅ بطاقة تويتر */
+    .twitter-card {
+      margin-top: 18px;
+      text-align: center;
     }
 
-    @media (max-width: 420px) {
-      .card { padding-top: 28px; }
+    .twitter-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--button-bg);
+      padding: 10px 18px;
+      border-radius: 9999px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.25s;
+    }
+
+    .twitter-link:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .twitter-link svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
   </style>
 </head>
@@ -283,8 +269,7 @@
 <body>
   <div class="container">
     <div class="card">
-     
-      <div class="theme-switch" id="themeSwitch" aria-label="تبديل الثيم">
+      <div class="theme-switch" id="themeSwitch">
         <div class="circle" id="themeIcon">🌙</div>
       </div>
 
@@ -314,23 +299,27 @@
       <div class="buttons">
         <button id="undoBtn" class="secondary">↩️ تراجع</button>
         <button id="resetBtn" class="secondary">🔄 إعادة ضبط</button>
-
-        <label style="display:flex;flex-direction:column;margin-top:6px;">
-          الحد الأقصى للتسجيل:
-          <input id="limitInput" type="number" min="1" max="10000" value="700" />
-        </label>
-      </div>
-
-      <div class="dealer-section">
-        <div class="dealer-title">مؤشر موزع الورق</div>
-        <button id="arrowBtn" aria-label="مؤشر موزع">
-          <span id="arrowIcon">⬇️</span>
-        </button>
       </div>
 
       <div class="hint">الحد الأقصى لكل تسجيل هو <span id="limitHint">700</span> نقطة.</div>
 
-      <ul id="history" aria-live="polite"></ul>
+      <ul id="history"></ul>
+
+      <div class="dealer-section">
+        <div class="dealer-title">مؤشر موزع الورق</div>
+        <button id="arrowBtn">
+          <span id="arrowIcon">⬇️</span>
+        </button>
+      </div>
+
+      <!-- ✅ رابط تويتر -->
+      <div class="twitter-card">
+        <a href="https://x.com/IxYusi" target="_blank" class="twitter-link">
+          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H17.17l-5.233-6.84-5.986 6.84H2.643l7.72-8.82L2.25 2.25h6.082l4.73 6.2 5.182-6.2zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span>@IxYusi</span>
+        </a>
+      </div>
+
     </div>
   </div>
 
@@ -342,18 +331,13 @@
     const historyEl = document.getElementById('history');
     const undoBtn = document.getElementById('undoBtn');
     const resetBtn = document.getElementById('resetBtn');
-    const limitInput = document.getElementById('limitInput');
-    const limitHint = document.getElementById('limitHint');
-    const arrowBtn = document.getElementById('arrowBtn');
-    const arrowIcon = document.getElementById('arrowIcon');
+    const teamToggle = document.getElementById('teamToggle');
     const themeSwitch = document.getElementById('themeSwitch');
     const themeIcon = document.getElementById('themeIcon');
-    const teamToggle = document.getElementById('teamToggle');
 
     let totalA = 0;
     let totalB = 0;
     let history = [];
-    let angle = 0;
     let currentTeam = 'teamA';
 
     function renderTotals() {
@@ -385,76 +369,35 @@
     });
 
     addBtn.addEventListener('click', () => {
-      let pts = parseInt(pointsInput.value, 10);
-      if (isNaN(pts) || pts < 0) {
-        alert('الرجاء إدخال قيمة صحيحة للنقاط');
-        return;
-      }
-      const limit = parseInt(limitInput.value, 10) || 700;
-      if (pts > limit) {
-        alert(`الحد الأقصى هو ${limit} نقطة، تم تعديل القيمة إلى ${limit}`);
-        pts = limit;
-      }
-      const team = currentTeam;
-      if (team === 'teamA') totalA += pts; else totalB += pts;
-      history.push({ team, points: pts });
+      const pts = parseInt(pointsInput.value, 10);
+      if (isNaN(pts) || pts < 0) return;
+      if (currentTeam === 'teamA') totalA += pts; else totalB += pts;
+      history.push({ team: currentTeam, points: pts });
       renderTotals();
       renderHistory();
     });
 
     undoBtn.addEventListener('click', () => {
-      if (history.length === 0) return;
+      if (!history.length) return;
       const last = history.pop();
       if (last.team === 'teamA') totalA -= last.points; else totalB -= last.points;
-      totalA = Math.max(0, totalA);
-      totalB = Math.max(0, totalB);
       renderTotals();
       renderHistory();
     });
 
     resetBtn.addEventListener('click', () => {
-      if (!confirm('هل تريد إعادة ضبط النتائج والسجل؟')) return;
-      totalA = 0;
-      totalB = 0;
-      history = [];
-      renderTotals();
-      renderHistory();
+      if (confirm('هل تريد إعادة الضبط؟')) {
+        totalA = totalB = 0;
+        history = [];
+        renderTotals();
+        renderHistory();
+      }
     });
-
-    limitInput.addEventListener('change', () => {
-      const v = parseInt(limitInput.value, 10) || 700;
-      limitHint.textContent = v;
-      pointsInput.max = v;
-    });
-
-    arrowBtn.addEventListener('click', () => {
-      angle -= 90;
-      arrowIcon.style.transform = `rotate(${angle}deg)`;
-    });
-
-    function setTheme(mode) {
-      document.body.classList.toggle('light', mode === 'light');
-      themeIcon.textContent = mode === 'light' ? '☀️' : '🌙';
-      localStorage.setItem('theme', mode);
-    }
 
     themeSwitch.addEventListener('click', () => {
-      const current = document.body.classList.contains('light') ? 'light' : 'dark';
-      setTheme(current === 'light' ? 'dark' : 'light');
+      document.body.classList.toggle('light');
+      themeIcon.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
     });
-
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        try {
-          navigator.serviceWorker.register('service-worker.js');
-        } catch (e) {
-          console.warn('SW register failed', e);
-        }
-      });
-    }
 
     renderTotals();
     renderHistory();
