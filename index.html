@@ -2,12 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>حاسبة الورق</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#1e293b">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --bg-main: #0f172a;
@@ -17,8 +14,8 @@
       --accent: #3b82f6;
       --button-bg: #334155;
       --button-hover: #475569;
-      --teamA: #2563eb; /* لنا */
-      --teamB: #dc2626; /* لهم */
+      --teamA-bg: rgba(59,130,246,0.25); /* لنا */
+      --teamB-bg: rgba(239,68,68,0.25);  /* لهم */
     }
 
     body.light {
@@ -29,8 +26,8 @@
       --accent: #2563eb;
       --button-bg: #e2e8f0;
       --button-hover: #cbd5e1;
-      --teamA: #2563eb;
-      --teamB: #dc2626;
+      --teamA-bg: rgba(59,130,246,0.2);
+      --teamB-bg: rgba(239,68,68,0.2);
     }
 
     body {
@@ -56,7 +53,6 @@
       padding: 20px;
       position: relative;
       transition: background 0.3s ease;
-      overflow: visible;
     }
 
     h1 {
@@ -78,9 +74,8 @@
       display: flex;
       align-items: center;
       padding: 1px;
-      box-sizing: border-box;
       transition: background 0.25s ease;
-      z-index: 999; 
+      z-index: 10;
     }
 
     .theme-switch .circle {
@@ -94,17 +89,12 @@
       color: #fff;
       font-size: 14px;
       transform: translateX(0);
-      transition: transform 0.25s ease, background 0.25s ease;
+      transition: transform 0.25s ease;
       box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-    }
-
-    body.light .theme-switch {
-      background: var(--button-hover);
     }
 
     body.light .theme-switch .circle {
       transform: translateX(-30px);
-      background: var(--accent);
     }
 
     .row {
@@ -112,22 +102,6 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 26px;
-    }
-
-    label {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    input[type=number] {
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--button-hover);
-      text-align: center;
-      background: var(--bg-main);
-      color: var(--text-main);
-      font-size: 16px;
-      transition: background 0.3s ease, color 0.3s ease;
     }
 
     button {
@@ -146,28 +120,23 @@
       color: white;
     }
 
-    .primary:hover {
-      filter: brightness(0.95);
-    }
-
     .secondary {
       background: var(--button-bg);
       color: var(--text-main);
     }
 
-    .secondary:hover {
+    .primary:hover, .secondary:hover {
       background: var(--button-hover);
     }
 
-    /* ✅ زر الفريق */
-    #teamToggle {
-      background: var(--teamA);
-      color: white;
-      transition: background 0.25s ease;
-    }
-
-    #teamToggle.teamB {
-      background: var(--teamB);
+    input[type=number] {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--button-hover);
+      text-align: center;
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-size: 16px;
     }
 
     .scores {
@@ -196,20 +165,6 @@
       margin-top: 4px;
     }
 
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .hint {
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-
     ul {
       list-style: none;
       padding: 0;
@@ -227,25 +182,12 @@
       text-align: right;
     }
 
-    /* ✅ خلفية السجل حسب الفريق */
-    li.teamA {
-      background: rgba(37, 99, 235, 0.3); /* أزرق خفيف */
-    }
-
-    li.teamB {
-      background: rgba(220, 38, 38, 0.3); /* أحمر خفيف */
-    }
+    li.teamA { background: var(--teamA-bg); }
+    li.teamB { background: var(--teamB-bg); }
 
     .dealer-section {
       margin-top: 20px;
       text-align: center;
-    }
-
-    .dealer-title {
-      color: var(--accent);
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 6px;
     }
 
     #arrowBtn {
@@ -266,27 +208,36 @@
     #arrowIcon {
       font-size: 32px;
       transition: transform 0.28s cubic-bezier(.2,.9,.3,1);
-      display: inline-block; 
-      transform-origin: 50% 50%;
     }
 
-    #arrowBtn:hover {
-      background: var(--button-hover);
+    #arrowBtn:hover { background: var(--button-hover); }
+
+    .twitter-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 20px;
+      font-weight: 600;
     }
 
-    @media (max-width: 420px) {
-      .card { padding-top: 28px; }
+    .twitter-link a {
+      text-decoration: none;
+      color: var(--accent);
+      background: var(--button-bg);
+      padding: 8px 14px;
+      border-radius: 10px;
+      transition: background 0.3s;
     }
+
+    .twitter-link a:hover { background: var(--button-hover); }
+
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="card">
-     
-      <div class="theme-switch" id="themeSwitch" aria-label="تبديل الثيم">
-        <div class="circle" id="themeIcon">🌙</div>
-      </div>
+      <div class="theme-switch" id="themeSwitch"><div class="circle" id="themeIcon">🌙</div></div>
 
       <h1>📊 حاسبة الورق</h1>
 
@@ -302,12 +253,12 @@
 
       <div class="scores">
         <div class="score-box">
-          <div class="team-name">لنا</div>
-          <div class="total" id="totalA">0</div>
-        </div>
-        <div class="score-box">
           <div class="team-name">لهم</div>
           <div class="total" id="totalB">0</div>
+        </div>
+        <div class="score-box">
+          <div class="team-name">لنا</div>
+          <div class="total" id="totalA">0</div>
         </div>
       </div>
 
@@ -328,9 +279,11 @@
         </button>
       </div>
 
-      <div class="hint">الحد الأقصى لكل تسجيل هو <span id="limitHint">700</span> نقطة.</div>
+      <ul id="history"></ul>
 
-      <ul id="history" aria-live="polite"></ul>
+      <div class="twitter-link">
+        <a href="https://x.com/IxYusi" target="_blank">𝕏 IxYusi</a>
+      </div>
     </div>
   </div>
 
@@ -343,25 +296,61 @@
     const undoBtn = document.getElementById('undoBtn');
     const resetBtn = document.getElementById('resetBtn');
     const limitInput = document.getElementById('limitInput');
-    const limitHint = document.getElementById('limitHint');
     const arrowBtn = document.getElementById('arrowBtn');
     const arrowIcon = document.getElementById('arrowIcon');
     const themeSwitch = document.getElementById('themeSwitch');
     const themeIcon = document.getElementById('themeIcon');
     const teamToggle = document.getElementById('teamToggle');
 
-    let totalA = 0;
-    let totalB = 0;
+    let totalA = 0, totalB = 0;
     let history = [];
-    let angle = 0;
     let currentTeam = 'teamA';
+    let angle = 0;
 
-    function renderTotals() {
+    teamToggle.addEventListener('click', () => {
+      if (currentTeam === 'teamA') {
+        currentTeam = 'teamB';
+        teamToggle.textContent = 'لهم';
+        teamToggle.style.background = 'rgba(239,68,68,0.8)';
+      } else {
+        currentTeam = 'teamA';
+        teamToggle.textContent = 'لنا';
+        teamToggle.style.background = 'rgba(59,130,246,0.8)';
+      }
+    });
+
+    addBtn.addEventListener('click', () => {
+      let pts = parseInt(pointsInput.value, 10);
+      if (isNaN(pts) || pts < 0) return alert('الرجاء إدخال قيمة صحيحة');
+      const limit = parseInt(limitInput.value, 10) || 700;
+      if (pts > limit) pts = limit;
+      if (currentTeam === 'teamA') totalA += pts; else totalB += pts;
+      history.push({ team: currentTeam, points: pts });
+      render();
+    });
+
+    undoBtn.addEventListener('click', () => {
+      if (history.length === 0) return;
+      const last = history.pop();
+      if (last.team === 'teamA') totalA -= last.points; else totalB -= last.points;
+      render();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (!confirm('هل تريد إعادة ضبط النتائج؟')) return;
+      totalA = totalB = 0;
+      history = [];
+      render();
+    });
+
+    arrowBtn.addEventListener('click', () => {
+      angle -= 90;
+      arrowIcon.style.transform = `rotate(${angle}deg)`;
+    });
+
+    function render() {
       totalAEl.textContent = totalA;
       totalBEl.textContent = totalB;
-    }
-
-    function renderHistory() {
       historyEl.innerHTML = '';
       for (let i = history.length - 1; i >= 0; i--) {
         const it = history[i];
@@ -371,66 +360,6 @@
         historyEl.appendChild(li);
       }
     }
-
-    teamToggle.addEventListener('click', () => {
-      if (currentTeam === 'teamA') {
-        currentTeam = 'teamB';
-        teamToggle.textContent = 'لهم';
-        teamToggle.classList.add('teamB');
-      } else {
-        currentTeam = 'teamA';
-        teamToggle.textContent = 'لنا';
-        teamToggle.classList.remove('teamB');
-      }
-    });
-
-    addBtn.addEventListener('click', () => {
-      let pts = parseInt(pointsInput.value, 10);
-      if (isNaN(pts) || pts < 0) {
-        alert('الرجاء إدخال قيمة صحيحة للنقاط');
-        return;
-      }
-      const limit = parseInt(limitInput.value, 10) || 700;
-      if (pts > limit) {
-        alert(`الحد الأقصى هو ${limit} نقطة، تم تعديل القيمة إلى ${limit}`);
-        pts = limit;
-      }
-      const team = currentTeam;
-      if (team === 'teamA') totalA += pts; else totalB += pts;
-      history.push({ team, points: pts });
-      renderTotals();
-      renderHistory();
-    });
-
-    undoBtn.addEventListener('click', () => {
-      if (history.length === 0) return;
-      const last = history.pop();
-      if (last.team === 'teamA') totalA -= last.points; else totalB -= last.points;
-      totalA = Math.max(0, totalA);
-      totalB = Math.max(0, totalB);
-      renderTotals();
-      renderHistory();
-    });
-
-    resetBtn.addEventListener('click', () => {
-      if (!confirm('هل تريد إعادة ضبط النتائج والسجل؟')) return;
-      totalA = 0;
-      totalB = 0;
-      history = [];
-      renderTotals();
-      renderHistory();
-    });
-
-    limitInput.addEventListener('change', () => {
-      const v = parseInt(limitInput.value, 10) || 700;
-      limitHint.textContent = v;
-      pointsInput.max = v;
-    });
-
-    arrowBtn.addEventListener('click', () => {
-      angle -= 90;
-      arrowIcon.style.transform = `rotate(${angle}deg)`;
-    });
 
     function setTheme(mode) {
       document.body.classList.toggle('light', mode === 'light');
@@ -443,21 +372,8 @@
       setTheme(current === 'light' ? 'dark' : 'light');
     });
 
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        try {
-          navigator.serviceWorker.register('service-worker.js');
-        } catch (e) {
-          console.warn('SW register failed', e);
-        }
-      });
-    }
-
-    renderTotals();
-    renderHistory();
+    setTheme(localStorage.getItem('theme') || 'dark');
+    render();
   </script>
 </body>
 </html>
